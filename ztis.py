@@ -1,6 +1,7 @@
 import json
 import requests
 import urllib.parse
+import random
 
 from mongo import Mongo
 
@@ -8,7 +9,10 @@ def getBaseUrl():
 	return "https://webhose.io/"
 
 def getKey():
-	return "38b97d09-9393-49f7-8d86-38fc688df1bc"
+	# this is very bad, but I don't care
+	with open('api_keys.txt', 'r') as f:
+		lines = f.readlines()
+	return lines[random.randint(0,len(lines)-1)]
 
 def getUrl(query):
 	webhoseKey = getKey()
@@ -31,8 +35,8 @@ def getPosts(response):
 	json = response.json()
 	return json['posts']
 
-def execute():
-	response = getResponseQuery("military poland")
+def execute(string):
+	response = getResponseQuery(string)
 	posts = getPosts(response)
 	counter = len(posts)
 	while(counter > 0):
@@ -45,7 +49,11 @@ def execute():
 	print(len(posts));
 	mongo = Mongo()
 	mongo.insertCollection(posts)
-
 	return posts
 
-execute()
+# execute("nato europe")
+# execute("isis")
+# execute("nato poland")
+# execute("army poland")
+# execute("isis nato")
+execute("europe army")
