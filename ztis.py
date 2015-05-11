@@ -12,7 +12,7 @@ def getKey():
 	# this is very bad, but I don't care
 	with open('api_keys.txt', 'r') as f:
 		lines = f.readlines()
-	return lines[random.randint(0,len(lines)-1)]
+	return lines[random.randint(0,len(lines)-1)].strip()
 
 def getUrl(query):
 	webhoseKey = getKey()
@@ -51,9 +51,9 @@ def execute(string):
 	mongo.insertCollection(posts)
 	return posts
 
-# execute("nato europe")
-# execute("isis")
-# execute("nato poland")
-# execute("army poland")
-# execute("isis nato")
+execute("nato europe")
+execute("isis")
+execute("nato poland")
+execute("army poland")
+execute("isis nato")
 execute("europe army")
