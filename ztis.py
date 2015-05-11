@@ -25,6 +25,7 @@ def getResponseQuery(query):
 	return result
 
 def getResponseNext(url):
+	print(url)
 	return requests.get(getBaseUrl()+url)
 
 def parseStringToUrl(string):
@@ -47,7 +48,7 @@ def execute(string):
 		counter = len(newPosts)
 		print(counter)
 	print(len(posts));
-	mongo = Mongo()
+	mongo = Mongo("ztis","ztis")
 	mongo.insertCollection(posts)
 	return posts
 
