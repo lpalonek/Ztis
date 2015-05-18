@@ -44,3 +44,20 @@ class Mongo:
 		self.collection
 		print(self.collection.count())
 		self.collection.delete_many({"language": {"$ne": "english"}})
+
+	def mapReduceLocations(self):
+		# unfortunately key is too long...
+		map = Code("function () {"
+				"for(var id = 0; id < this.locations.length; id++){"
+				   "var key = this.locations[id];"
+    			"emit(key, 1);"
+				   "}"
+					"}")
+		reduce = Code("function (k, vals) {"
+    					"return Array.sum(vals);"
+						"}")
+		print(self.collection.count())
+		self.collection.map_reduce(map, reduce, "test")
+
+
+
