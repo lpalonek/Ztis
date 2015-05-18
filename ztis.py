@@ -10,7 +10,7 @@ def getBaseUrl():
 
 def getKey():
 	# this is very bad, but I don't care
-	with open('api_keys.txt', 'r') as f:
+	with open('api_keys.properties', 'r') as f:
 		lines = f.readlines()
 	return lines[random.randint(0,len(lines)-1)].strip()
 

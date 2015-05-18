@@ -1,8 +1,8 @@
 import pymongo
 from bson.code import Code
 
-class Mongo:
 
+class Mongo:
 	def __init__(self, database, collectionName):
 		self.client = pymongo.MongoClient('localhost', 27017)
 		self.db = self.client[database]
@@ -16,25 +16,31 @@ class Mongo:
 		self.collection.insert_one(item)
 
 	def cloneCollection(self, copyName):
-		print(self.collection.find())
+		print(self.collection.find().count())
 		newCollection = self.db[copyName]
 		newCollection.drop()
-		for doc in self.collection.find():
-			# i feel sick when I see that O(n^2)
-			if doc['language'] == "english" and not newCollection.find_one({"url":doc['url']}):
-				newCollection.insert_one(doc)
-		print(newCollection)
+		newCollection.insert_many(list(self.collection.find()))
+		self.collection = newCollection
 
 	def removeDuplicates(self):
-		# unfortunately key is too long...
-		map = Code("function () {"
-    			"emit(this.url, 1);"
-					"}")
-		reduce = Code("function (k, vals) {"
-    					"return Array.sum(vals);"
-						"}")
+		result = list(self.collection.aggregate([{"$group": {
+			"_id": {"url": "$url"},
+			"uniqueIds": {"$addToSet": "$_id"},
+			"count": {"$sum": 1}
+		}},
+			{"$match": {
+				"count": {"$gte": 2}
+			}}, ]))
+		for item in result:
+			first = True
+			for object in item['uniqueIds']:
+				if first:
+					first = False
+					continue
+				self.collection.delete_one({"_id":object})
+		print(len(result))
+
+	def removeNonEnglishArticles(self):
+		self.collection
 		print(self.collection.count())
-		self.collection.map_reduce(map, reduce, "test")
-
-
-
+		self.collection.delete_many({"language": {"$ne": "english"}})
