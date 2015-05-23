@@ -1,4 +1,4 @@
-import json
+import time
 import requests
 import urllib.parse
 import random
@@ -10,12 +10,13 @@ def getBaseUrl():
 
 def getKey():
 	# this is very bad, but I don't care
-	with open('api_keys.properties', 'r') as f:
+	with open('api_keys.txt', 'r') as f:
 		lines = f.readlines()
 	return lines[random.randint(0,len(lines)-1)].strip()
 
 def getUrl(query):
 	webhoseKey = getKey()
+	print(webhoseKey)
 	webhoseUrl = getBaseUrl()+"search?token="+webhoseKey+"&format=json&q="+query
 	return webhoseUrl
 
@@ -50,11 +51,10 @@ def execute(string):
 	print(len(posts));
 	mongo = Mongo("ztis","ztis")
 	mongo.insertCollection(posts)
-	return posts
 
 execute("nato europe")
-execute("isis")
 execute("nato poland")
 execute("army poland")
+execute("isis")
 execute("isis nato")
 execute("europe army")
