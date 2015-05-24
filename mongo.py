@@ -8,6 +8,9 @@ class Mongo:
 		self.db = self.client[database]
 		self.collection = self.db[collectionName]
 
+	def getCollection(self):
+		return self.collection
+
 	def insertCollection(self, list: list):
 		for item in list:
 			self.insertItem(item)
@@ -46,7 +49,6 @@ class Mongo:
 		self.collection.delete_many({"language": {"$ne": "english"}})
 
 	def mapReduceLocations(self):
-		# unfortunately key is too long...
 		map = Code("function () {"
 				"for(var id = 0; id < this.locations.length; id++){"
 				   "var key = this.locations[id];"
@@ -57,7 +59,7 @@ class Mongo:
     					"return Array.sum(vals);"
 						"}")
 		print(self.collection.count())
-		self.collection.map_reduce(map, reduce, "test")
+		return self.collection.map_reduce(map, reduce, "test").find()
 
 
 
