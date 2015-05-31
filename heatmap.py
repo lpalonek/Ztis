@@ -17,7 +17,9 @@ class HeatMap:
 		shapename = 'admin_0_countries'
 		countries_shp = shpreader.natural_earth(resolution='110m',
 												category='cultural', name=shapename)
-		ax = plt.axes(projection=ccrs.Robinson())
+		fig, ax = plt.subplots(figsize=(12,6),
+					   subplot_kw={'projection': ccrs.Robinson()})
+
 		plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
 
@@ -32,7 +34,12 @@ class HeatMap:
 			ax.add_geometries(country.geometry, ccrs.PlateCarree(),
 							  facecolor=cmap(quantity / float(maxQuantity), 1),
 							  label=countryName)
+		norm = mpl.colors.Normalize(vmin = 1, vmax = maxQuantity)
+		cax = fig.add_axes([0.91, 0.1, 0.02, 0.8])
+		mpl.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm )
 
+
+		print(maxQuantity)
 		plt.savefig(mapFileName, dpi = 200)
 
 	def createDict(self, countriesRecords):
