@@ -44,7 +44,6 @@ class Mongo:
 		print(len(result))
 
 	def removeNonEnglishArticles(self):
-		self.collection
 		print(self.collection.count())
 		self.collection.delete_many({"language": {"$ne": "english"}})
 
@@ -60,6 +59,12 @@ class Mongo:
 						"}")
 		print(self.collection.count())
 		return self.collection.map_reduce(map, reduce, "test").find()
+
+	def findCustom(self, query):
+		newCollection = self.db['test']
+		newCollection.drop()
+		newCollection.insert_many(list(self.collection.find(query)))
+		return newCollection
 
 
 
